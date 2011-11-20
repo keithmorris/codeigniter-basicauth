@@ -19,6 +19,15 @@
 			body { margin: 0; font-size: 1.3em; line-height: 1.231; }
 			body, button, input, select, textarea { font-family: 'Droid Sans', sans-serif; color: #222; }
 			
+			header nav ul {
+				padding-left: 0;
+			}
+			
+			header nav li {
+				display: inline;
+				padding-right: .5em;
+			}
+			
 			#main-container {
 				width: 960px;
 				margin: 1em auto;
@@ -87,13 +96,30 @@
 				border-bottom: .1em #ccc solid;
 			}
 			
+			#main-footer {
+				border-bottom: 1px #ccc solid;
+				margin-bottom: 2em;
+			}
+			
 		</style>
 
 	</head>
 
 	<body>
 		<div id="main-container">
-			<h1 id="main-title">BasicAuth</h1>
+			<header>
+				<h1 id="main-title">BasicAuth</h1>
+				<nav>
+					<ul>
+						<li><?=anchor('example/index', 'Home')?></li>
+						<li><?=anchor('example/unrestricted', 'Unrestricted')?></li>
+						<li><?=anchor('example/restricted', 'Restricted')?></li>
+						<li><?=anchor('example/adminsonly', 'Admins Only')?></li>
+						<li><?=anchor('authenticate/hashpassword', 'MD5 Password Hash Utility')?></li>
+					</ul>
+				</nav>
+			</header>
+			
 			<div id="content">
 				
 

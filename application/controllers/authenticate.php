@@ -31,6 +31,7 @@ class Authenticate extends CI_Controller
 	{
 		$this->pagedata['title'] = "Restricted One";
 		$this->pagedata['layout'] = "notauthorized";
+		$this->pagedata['errors'][] = "NOT AUTHORIZED!";
 
 		$this->load->view('wrapper', $this->pagedata);
 	}
@@ -69,12 +70,11 @@ class Authenticate extends CI_Controller
 	public function logout()
 	{
 		$this->basic_auth->logout();
-		redirect('authenticate/login');
+		redirect('example/index');
 	}
 	
 	public function hashpassword()
 	{
-		// TODO create utility page to hash an MD5 string
 		$this->pagedata['title'] = "Quick Auth MD5 Hash Utility";
 		$this->pagedata['layout'] = "password_hash";
 		$this->load->view('wrapper', $this->pagedata);

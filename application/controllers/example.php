@@ -45,8 +45,8 @@ class Example extends CI_Controller
 		$this->basic_auth->set_protected_methods(array(
 			// Uncomment the '*' line below to protect all methods
 			//'*' => 'user,admins',
-			'index' => 'user,admins',
-			'test' => 'admins,editors,users'
+			'restricted' => 'viewers,editors,admins',
+			'adminsonly' => 'admins'
 		));
 		
 		if (!$this->basic_auth->check())
@@ -59,11 +59,12 @@ class Example extends CI_Controller
 				
 				case basic_auth::ERROR_USER_NOT_LOGGED_IN:
 					$redirect = 'authenticate/login';
+					$this->session->set_userdata('returnurl', uri_string());
 					break;
 				default:
 					break;
 			} 
-			$this->session->set_userdata('returnurl', uri_string());
+			
 			redirect($redirect);
 		}
 	}
@@ -71,29 +72,31 @@ class Example extends CI_Controller
 
 	public function index()
 	{
-		echo 'in index file';
+		$this->pagedata['title'] = "No Restriction";
+		$this->pagedata['layout'] = "norestrictions";
+		$this->load->view('wrapper', $this->pagedata);
 	}
 	
 	public function restricted()
 	{
-		$this->pagedata['title'] = "Restricted One";
+		$this->pagedata['title'] = "Restricted";
 		$this->pagedata['layout'] = "authorized";
-		$this->pagedata['errors'][] = 'There was an error';
-		$this->pagedata['errors'][] = 'There was another error';
-		$this->pagedata['success'][] = 'There was a success';
-		$this->pagedata['success'][] = 'There was another success';
-		
 		$this->load->view('wrapper', $this->pagedata);
 	}
 	
 	public function adminsonly()
 	{
-		
+		$this->pagedata['title'] = "Restricted";
+		$this->pagedata['layout'] = "authorized";
+		$this->pagedata['success'][] = "AUTHORIZED! You are an admin.";
+		$this->load->view('wrapper', $this->pagedata);		
 	}
 	
 	public function unrestricted()
 	{
-		
+		$this->pagedata['title'] = "No Restriction";
+		$this->pagedata['layout'] = "norestrictions";
+		$this->load->view('wrapper', $this->pagedata);		
 	}
 }
 
