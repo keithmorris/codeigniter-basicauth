@@ -115,7 +115,7 @@
 						<li><?=anchor('example/unrestricted', 'Unrestricted')?></li>
 						<li><?=anchor('example/restricted', 'Restricted')?></li>
 						<li><?=anchor('example/adminsonly', 'Admins Only')?></li>
-						<li><?=anchor('authenticate/hashpassword', 'MD5 Password Hash Utility')?></li>
+						<li><?=anchor('utilities/hashpassword', 'MD5 Password Hash Utility')?></li>
 					</ul>
 				</nav>
 			</header>

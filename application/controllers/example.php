@@ -88,7 +88,7 @@ class Example extends CI_Controller
 	{
 		$this->pagedata['title'] = "Restricted";
 		$this->pagedata['layout'] = "authorized";
-		$this->pagedata['success'][] = "AUTHORIZED! You are an admin.";
+		$this->pagedata['success'][] = "AUTHORIZED! You are a member of the admins group.";
 		$this->load->view('wrapper', $this->pagedata);		
 	}
 	

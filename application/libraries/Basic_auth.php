@@ -29,7 +29,16 @@
  */
 class Basic_auth
 {
+	/**
+	 * Constant that is used to identify the error when a user tries to access a 
+	 * protected method and is not logged in.
+	 */
 	const ERROR_USER_NOT_LOGGED_IN = 'errorUserNotLoggedIn';
+	
+	/**
+	 * Constant that is used to identify the error when a logged-in user tries 
+	 * to access a protected method to which they are not authorized.
+	 */
 	const ERROR_USER_NOT_AUTHORIZED = 'errorUserNotAuthorized';
 	
 	
@@ -59,6 +68,17 @@ class Basic_auth
 		$this->method = $this->CI->router->method;
 	}
 	
+	/**
+	 * Based on the configuration information about the protected methods that 
+	 * is set with the 'set_protected_methods()' method, this method determines 
+	 * if the current requested method is protected and, if so, checks if the 
+	 * logged in user has permissions to access it. This returns TRUE if the 
+	 * user is logged in and authorized. Otherwise it stores either the 
+	 * ERROR_USER_NOT_LOGGED_IN or ERROR_USER_NOT_AUTHORIZED and returns FALSE. 
+	 * The error can be retreived using get_error()
+	 * 
+	 * @return boolean
+	 */
 	public function check()
 	{	
 		if ($this->method_is_protected())
@@ -87,13 +107,46 @@ class Basic_auth
 		}
 	}
 	
-	
+	/**
+	 * Configures which methods are protected and which user groups can access each method. The config parameter is an associative array where the key is the name of the method and the value is a comma-delimited list of group names that are allowed to access the method.
+	 * 
+	 * Should the key be the the wildcard method (default '*') this will supercede all other method configurations and will apply to all methods.
+	 * 
+	 * The example below could be setup within your controller constructor (or a method called in the constructor) to configure the protected methods.
+	 * <code>
+	 *		$this->basic_auth->set_protected_methods(array(
+	 *			'method_one' => 'viewers,editors,admins',
+	 *			'method_two' => 'admins'
+	 *		));
+	 * </code>
+	 * 
+	 * @param array $config 
+	 */
 	public function set_protected_methods($config)
 	{
 		$this->protected_methods = $config;
 	}
 	
 	
+	/**
+	 * The login method takes a username and password and checks it agains the 
+	 * users setup in the config. If it matches, it creates an authtoken and 
+	 * stores it as a session variable to indicate the user is logged in.
+	 * 
+	 * By default, the login method expectes that the password is stored in the 
+	 * config as an md5 hash. If the config is set to md5, the login method 
+	 * expects a plaintext $password which it will md5 then compare to the value 
+	 * stored for that user in the config.
+	 * 
+	 * If you are using your own encryption method in your applicaiton, you will 
+	 * want to set the password_type in the config to 'plain' then set the 
+	 * password in the config to be an encoded version of the password using 
+	 * your encryption method.
+	 * 
+	 * @param string $username
+	 * @param string $password
+	 * @return boolean 
+	 */
 	public function login($username, $password)
 	{
 		$this->logout();
@@ -114,19 +167,31 @@ class Basic_auth
 		}
 	}
 	
-	
+	/**
+	 * Logs the current user out of the system
+	 * 
+	 * @return boolean
+	 */
 	public function logout()
 	{
 		return $this->CI->session->unset_userdata($this->session_var_name);
 	}
 	
-	
+	/**
+	 * Returns the error that was stored by the check() method.
+	 * 
+	 * @return string
+	 */
 	public function get_error()
 	{
 		return $this->_error;
 	}
 
-
+	/**
+	 * Returns a boolean indicating if the current user is logged in. If they are not, it attemts to auto log them in based on the session cookie information.
+	 * 
+	 * @return boolean
+	 */
 	public function user_is_logged_in()
 	{
 		if($this->logged_in_user)
@@ -153,6 +218,11 @@ class Basic_auth
 		}
 	}
 	
+	/**
+	 * Gets the currently logged in user or FALSE if the user is not logged in.
+	 * 
+	 * @return string
+	 */
 	public function get_logged_in_user()
 	{
 		if($this->user_is_logged_in())
@@ -171,7 +241,9 @@ class Basic_auth
 	*
 	*************************************************************/
 
-	
+	/**
+	 * Reads the basic_auth.php config file and sets the class properties.
+	 */
 	protected function configure()
 	{
 		$this->CI->config->load($this->config_file);
@@ -181,7 +253,11 @@ class Basic_auth
 		$this->password_type = (!empty($this->config['password_type'])) ? $this->config['password_type'] : $this->password_type ;		
 	}
 	
-	
+	/**
+	 * Determines if the current method is protected.
+	 * 
+	 * @return boolean
+	 */
 	protected function method_is_protected()
 	{
 		if (array_key_exists($this->wildcard_method, $this->protected_methods))
@@ -191,7 +267,11 @@ class Basic_auth
 		return array_key_exists($this->method, $this->protected_methods);
 	}
 	
-
+	/**
+	 * Determines if the current user is authorized to access the current method.
+	 * 
+	 * @return true
+	 */
 	protected function user_is_authorized()
 	{
 		if($this->logged_in_user)
@@ -205,7 +285,12 @@ class Basic_auth
 		}
 	}
 	
-	
+	/**
+	 * Gets a list of unique authorized users for the current method from the 
+	 * user groups.
+	 * 
+	 * @return array
+	 */
 	protected function get_authorized_method_users()
 	{
 		if (array_key_exists($this->wildcard_method, $this->protected_methods))
@@ -229,15 +314,37 @@ class Basic_auth
 		return array_unique($auth_users);
 	}
 
-
+	/**
+	 * Creates authtoken for the current user. Also used to validate user auth cookie.
+	 * 
+	 * @param string $userid
+	 * @return string
+	 */
 	protected function create_authtoken($userid)
 	{
-		return md5($userid . $this->config['tokensalt'] . $this->users[$userid]);
+		if (!empty($this->users[$userid]))
+		{
+			return md5($userid . $this->config['tokensalt'] . $this->users[$userid]);
+		}
+		else
+		{
+			return FALSE;
+		}
+		
 	}
 	
-	
+	/**
+	 * Used to validate if the authtoken stored in the users session data is valid.
+	 * 
+	 * @param string $userid
+	 * @param string $authtoken
+	 * @return boolean  
+	 */
 	protected function authtoken_is_valid($userid, $authtoken)
 	{
 		return $authtoken == $this->create_authtoken($userid);
 	}	
 }
+
+/* End of file Basic_auth.php */
+/* Location: ./application/libraries/Basic_auth.php */
