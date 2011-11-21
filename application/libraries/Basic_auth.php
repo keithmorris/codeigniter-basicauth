@@ -108,11 +108,17 @@ class Basic_auth
 	}
 	
 	/**
-	 * Configures which methods are protected and which user groups can access each method. The config parameter is an associative array where the key is the name of the method and the value is a comma-delimited list of group names that are allowed to access the method.
+	 * Configures which methods are protected and which user groups can access 
+	 * each method. The config parameter is an associative array where the key 
+	 * is the name of the method and the value is a comma-delimited list of 
+	 * group names that are allowed to access the method.
 	 * 
-	 * Should the key be the the wildcard method (default '*') this will supercede all other method configurations and will apply to all methods.
+	 * Should the key be the the wildcard method (default '*') this will 
+	 * supercede all other method configurations and will apply to all methods.
 	 * 
-	 * The example below could be setup within your controller constructor (or a method called in the constructor) to configure the protected methods.
+	 * The example below could be setup within your controller constructor (or a 
+	 * method called in the constructor) to configure the protected methods.
+	 * 
 	 * <code>
 	 *		$this->basic_auth->set_protected_methods(array(
 	 *			'method_one' => 'viewers,editors,admins',
@@ -188,7 +194,9 @@ class Basic_auth
 	}
 
 	/**
-	 * Returns a boolean indicating if the current user is logged in. If they are not, it attemts to auto log them in based on the session cookie information.
+	 * Returns a boolean indicating if the current user is logged in. If they 
+	 * are not, it attemts to auto log them in based on the session cookie 
+	 * information.
 	 * 
 	 * @return boolean
 	 */
