@@ -1,14 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 	
-if(!empty($errors) || !empty($success)):
-?>
+if(!empty($errors) || !empty($success)): ?>
+
 <div id="status">	
-	<?php
+	
 
+	<?php if(!empty($errors)): ?>
 
-
-	if(!empty($errors)):
-	?>
+		<!-- Error Status -->
 		<div class="error">
 			<?php if($errors): ?>
 			<ul>
@@ -20,15 +19,16 @@ if(!empty($errors) || !empty($success)):
 			</ul>
 			<?php endif; ?>
 		</div>
-	<?php
-	endif;
+
+	<?php endif; ?>
 
 
 
 
 
-	if(!empty ($success)):
-	?>
+	<?php if(!empty ($success)): ?>
+
+		<!-- Success Status -->
 		<div class="success">
 			<ul>
 			<?php
@@ -39,12 +39,12 @@ if(!empty($errors) || !empty($success)):
 			?>
 			</ul>
 		</div>
-	<?php
-	endif;
-?>
+
+	<?php endif;?>
+
 </div>
-<?php
-endif;
+
+<?php endif;
 
 
 
