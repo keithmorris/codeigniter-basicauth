@@ -20,14 +20,15 @@ This Basic Authentication library is, at its core, simply a library to handle au
 The library is distributed with an example application to show how to configure authorization levels via groups as well as a demonstration of a working authentication UI that can be used as a starting point to build your own.
 
 There are only two files in the distribution that you really need in order to use the BasicAuth library:
-	
+```shell	
 	/application/libraries/Basic_auth.php
 	/application/config/basic_auth.php
+```
 
 Within the config file, you define the list of users with their passwords as an associative array with the key being the username and the value being the password. By default, the library expects the password to be stored as an md5 has of the actual password. You then define groups that the users belong to. The per-method authorization is done at the group level; not the user level.
 
 To configure the protection on each of the methods, in the constructor of the controller, you load the Basic Auth library then set the methods that are to be protected via the set_protected_methods() method of the Basic Auth library. The configuration is an associative array where the key is the name of the method to be protected and the value is a comma-delimited list of groups that are allowed to access the method. By default, there is a wildcard '*' key that can be used that overrides all other keys. This wildcard sets all methods of the controller to be protected and accessible only to the groups specified for the wildcard method. Please note that setting the wildcard will protect ALL methods so any authentication and/or "Not Authorized" pages you want to create will have to be created in a different controller and not the one being protected. The example app demonstrates this.
-
+```php
 	$this->load->library('Basic_auth');
 	$this->basic_auth->set_protected_methods(array(
 		// Uncomment the '*' line below to protect all methods
@@ -35,7 +36,7 @@ To configure the protection on each of the methods, in the constructor of the co
 		'restricted' => 'viewers,editors,admins',
 		'adminsonly' => 'admins'
 	));
-
+```
 After this, you call the check() method of the Basic Auth library which determines if the current method should be protected and if so, if the current user is logged in and has access. This method returns one of three scenarios:
 
 * If user is logged in and has permission to access the method, check() returns TRUE.
@@ -45,10 +46,10 @@ After this, you call the check() method of the Basic Auth library which determin
 If the check() method returns TRUE, you should pass the user through to the requested method.
 
 In the event of one of the errors above, the error message can be retrieved via the $this->basic_auth->get_error() method and will hold the value of one of the following two constants:
-
+```shell
 	Basic_auth::ERROR_USER_NOT_LOGGED_IN
 	Basic_auth::ERROR_USER_NOT_AUTHORIZED
-	
+```
 
 See the distributed sample application for an example of how to handle these errors and login the user or present them with a "Not Authorized" page.
 
