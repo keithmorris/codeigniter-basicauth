@@ -61,7 +61,12 @@ By using the 'md5' value in the 'password\_type' in the config, you are simply i
 
 ## Change Log
 
-### 0.2
+### 0.2.1
+
+* Add syntax highlighting tags to readme.md for GitHub parser.
+
+### 0.2.0
+
 * Updated Codeigniter core to 2.1.0
 * Cleaned up the example application
 * added a simple utility method (hashpassword) to MD5 hash a string for use in generating the hashes for the md5 hashed user passwords (http://example.com/utlilities/hashpassword
